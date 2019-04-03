@@ -13,12 +13,12 @@ class EnergyEnv(gym.Env):
         # instance attributes
         self.cur_step = None
         self.data_size = None
-
+        self.prev = 0
         # calculation variables
         self.energy_4G = 100;
         self.energy_wifi = 10;
-        self.bandwidth_4G = 150;
-        self.bandwidth_wifi = 15;
+        self.bandwidth_4G = 15;
+        self.bandwidth_wifi = 150;
         self.beta = 10;
 
         # action space
@@ -37,31 +37,41 @@ class EnergyEnv(gym.Env):
 
 
     def _reset(self):
-        self.cur_step = 0;
+        self.cur_step = 0
         self.data_size = int(self.data_size_history[self.cur_step])
-        return self._get_obs()
+        return self._get_obs(0)
 
     def _step(self,action):
         assert self.action_space.contains(action)
+
         self.cur_step += 1
         self.data_size = self.data_size_history[self.cur_step]
-
-        reward =self._compute(self.data_size,action)
+        cur =  self._compute(self.data_size,action)
+        if(cur < self.prev):
+            reward = 1
+        elif(cur > self.prev):
+            reward = -1
+        else:
+            reward = 0
+        self.prev = cur;
         done = self.cur_step == self.n_step -1
         info = {'cur_val': reward}
 
-        return self._get_obs(), reward , done, info
+        return self._get_obs(1), reward , done, info
 
     def _compute(self,data_size,action):
         energy = (self.energy_wifi*data_size*action)+(self.energy_4G*data_size*(1-action))
-        delay1 = self.bandwidth_4G*data_size
+        delay1 = self.bandwidth_4G*data_size*(1-action)
         delay2 = self.bandwidth_wifi*data_size
         m_delay = self.beta*max(delay1,delay2)
         return energy + m_delay
 
-    def _get_obs(self):
+    def _get_obs(self,tag):
         obs_arry = np.array([self.data_size])
+
         return obs_arry
+
+
 
 
 

@@ -9,8 +9,9 @@ from model import mlp
 class DQNAgent(object):
   """ A simple Deep Q agent """
   def __init__(self, state_size, action_size):
-    self.state_size = 1
-    self.action_size = 1
+    self.state_size = state_size
+    self.action_size = action_size
+
     self.memory = deque(maxlen=2000)
     self.cur_size = 0
     self.gamma = 0.95  # discount rate
