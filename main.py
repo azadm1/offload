@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     # intial prep
     len = 4000
-    episodes = 2000
+    episodes = 10
     batch_size = 32
     data_index = ['task%d' % (i + 1) for i in range(len)]
     data_list = pd.Series(np.random.randint(10, 31, size=len), data_index)
@@ -22,13 +22,14 @@ if __name__ == "__main__":
     action_size = env.observation_space.n
     agent = DQNAgent(state_size,action_size)
     count = 0
+    count_1 = 0
     for e in range(episodes):
         state = env._reset()
 
         for time in range(env.n_step):
             action = agent.act(state)
             if(action == 1):
-                print(action)
+                count_1 +=1
             else:
                 count += 1
             next_state,reward,done,info = env._step(action)
@@ -53,9 +54,10 @@ if __name__ == "__main__":
     if (e+10) % 10 == 0 :
         agent.save('weights/{}-dqn.h5'.format(timestamp))
 
+    print("count zeros {} , count ones {}".format(count,count_1))
     for emma in range(0,19):
         x = input("Enter Data_Size")
-        action = agent.act(state)
+        action = agent.act(x)
         next_state, reward, done, info = env._step(action)
         print(next_state, reward, done, info)
 

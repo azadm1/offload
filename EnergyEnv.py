@@ -42,7 +42,7 @@ class EnergyEnv(gym.Env):
         return self._get_obs(0)
 
     def _step(self,action):
-        assert self.action_space.contains(action)
+        #assert self.action_space.contains(action)
 
         self.cur_step += 1
         self.data_size = self.data_size_history[self.cur_step]
