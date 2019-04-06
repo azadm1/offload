@@ -60,6 +60,8 @@ class EnergyEnv(gym.Env):
         return self._get_obs(1), reward , done, info
 
     def _compute(self,data_size,action):
+        data_size = int(data_size)
+        action = int(action)
         energy = (self.energy_wifi*data_size*action)+(self.energy_4G*data_size*(1-action))
         delay1 = self.bandwidth_4G*data_size*(1-action)
         delay2 = self.bandwidth_wifi*data_size

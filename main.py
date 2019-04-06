@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     # intial prep
     len = 4000
-    episodes = 10
+    episodes = 2
     batch_size = 32
     data_index = ['task%d' % (i + 1) for i in range(len)]
     data_list = pd.Series(np.random.randint(10, 31, size=len), data_index)
@@ -34,12 +34,8 @@ if __name__ == "__main__":
                 count += 1
             next_state,reward,done,info = env._step(action)
             agent.remember(state,action,reward,next_state,done)
-            #print("p_state", state)
-            #print(action,next_state,reward,done,info )
             state = next_state
-            #print("n_state",state)
 
-            #input("Press Enter to continue...")
 
             if done:
                 print("episode: {}/{}, episode end value: {} ".format(
@@ -57,8 +53,9 @@ if __name__ == "__main__":
     print("count zeros {} , count ones {}".format(count,count_1))
     for emma in range(0,19):
         x = input("Enter Data_Size")
+        x = np.array([x])
         action = agent.act(x)
-        next_state, reward, done, info = env._step(action)
-        print(next_state, reward, done, info)
+        reward = env._compute(x,action)
+        print(x,action,reward)
 
 
